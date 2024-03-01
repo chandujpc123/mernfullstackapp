@@ -1,0 +1,263 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <!-- DATATABLES -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+    <style>
+        body {
+            background-image: url('1.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Custom styling for the DataTable */
+        #users_wrapper {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none; /* Initially hide the overlay */
+            padding-top: 20%;
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: auto; /* Center the spinner */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Styling for DataTable */
+        #existing_items {
+            margin-left: 10%;
+            margin-right: 10%;
+            width: 1900px;
+        }
+
+        #users_wrapper {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        #users th,
+        #users td {
+            text-align: center;
+            padding: 10px;
+            color: black;
+            font-size: bold;
+            font-size: 20;
+        }
+
+        #users thead {
+            background-color: black; /* Set the table header background color to black */
+            color: black;
+        }
+
+        #users tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #users tbody tr:hover {
+            background-color: #ddd;
+        }
+
+        /* Edit button style */
+        #users tbody button.btn-primary {
+            background-color: #ffc107; /* Yellow */
+            border: none;
+            color: black; /* Black text */
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        #users tbody button.btn-primary:hover {
+            background-color: green; /* Black background on hover */
+            color: yellow; /* Yellow text on hover */
+            border: 2px solid yellow; /* Yellow border on hover */
+        }
+    </style>
+
+    <script>
+        var usersTable = null;
+        var jsonResponse = null;
+
+        function getExistingUsersData() {
+            var loader = document.getElementById("loader");
+            loader.style.display = "block";
+
+            let xhr = new XMLHttpRequest();
+
+            xhr.addEventListener("readystatechange", function () {
+                if (this.readyState === this.DONE) {
+                    jsonResponse = JSON.parse(this.responseText);
+                    renderTheDataTable();
+                }
+            });
+
+            xhr.open("GET", "https://healthtracker-06c0.restdb.io/rest/cctusers");
+            xhr.setRequestHeader("x-apikey", "657c537763ede90d96f17207");
+            xhr.send();
+        }
+
+        function renderTheDataTable() {
+            if (usersTable != null) {
+                usersTable.destroy();
+            }
+
+            usersTable = $('#users').DataTable({
+                data: jsonResponse,
+                columns: [
+                    { data: 'username' },
+                    { data: 'email' },
+                    { data: 'mobile' },
+                    {
+                        data: '_id',
+                        render: function (data, type, row, meta) {
+                            var delStr = '<button class="btn btn-primary" onclick="editData(\'' + data + '\')"><i class="fa fa-edit"></i></button>' +
+                                '<button class="btn btn-danger" onclick="deleteData(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
+                            return delStr;
+                        }
+                    }
+                ]
+            });
+
+            var loader = document.getElementById("loader");
+            loader.style.display = "none";
+            document.getElementById("users_wrapper").style.display = "block";
+        }
+
+        function delUserByDelAPI(userId) {
+            let xhr1 = new XMLHttpRequest();
+            xhr1.addEventListener("readystatechange", function () {
+                if (this.readyState === this.DONE) {
+                    alert("Deleted the selected User!");
+                    getExistingUsersData();
+                }
+            });
+            xhr1.open("DELETE", "https://healthtracker-06c0.restdb.io/rest/cctusers/" + userId);
+		xhr1.setRequestHeader("x-apikey", "657c537763ede90d96f17207");
+            xhr1.send();
+        }
+		
+		function delUserProfileByEmail(email) {
+    let xhr = new XMLHttpRequest();
+    xhr.addEventListener("readystatechange", function () {
+        if (this.readyState === this.DONE) {
+            if (this.status === 200) {
+                alert("Deleted the selected User from user-profile!");
+            } else {
+                alert("Failed to delete user from user-profile database!");
+            }
+        }
+    });
+    xhr.open("DELETE", "https://lahari-4a08.restdb.io/rest/user-profile?q={'email':'" + email + "'}");
+    xhr.setRequestHeader("x-apikey", "657c537763ede90d96f17207"); // Replace with your user-profile API key
+    xhr.send();
+}
+
+        function editData(userId) {
+            var loader = document.getElementById("loader");
+            loader.style.display = "block";
+
+          
+            setTimeout(function () {
+                window.location.href = "AddNewUser.html?uId=" + userId;
+            }, 1000); // Adjust the delay as needed
+        }
+
+        function deleteData(userId) {
+            let choice = confirm("Are you sure you want to delete this user?");
+            if (choice) {
+                delUserByDelAPI(userId);
+            }
+        }
+
+        function addUserPage() {
+            var loader = document.getElementById("loader");
+            loader.style.display = "block";
+
+            
+            setTimeout(function () {
+                window.location.href = "AddNewUser.html";
+            }, 1000); // Adjust the delay as needed
+        }
+    </script>
+</head>
+
+<body onload="getExistingUsersData();">
+    <div class='container'>
+        <h1 style="text-align:center;">CCT Health Tracker Application</h1>
+        <button class="btn btn-primary" onclick="getExistingUsersData();">Get all register User Data</button>
+        <button class="btn btn-success" onclick="addUserPage();">Add NewUser</button>
+        <br /><br />
+        <div id="existing_data" class='table-responsive'>
+            <table id="users" class="display table table-info table-striped table-hover" style="width:100%">
+                <thead>
+                    <tr>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Mobile</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div id="loader" class="overlay">
+        <div class="loader"></div>
+    </div>
+</body>
+
+</html>
