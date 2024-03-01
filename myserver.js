@@ -54,7 +54,7 @@ myServer.get("/getreqresusers", (req,res)=>{
     })
 
 });
-
+//Any other path other than the above routes, redirect to homepage
 myServer.get("*", function(req,res){
     console.log("Received Invalid Page request");
     //console.log("__dirname value=", __dirname);
