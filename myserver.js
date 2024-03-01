@@ -1,4 +1,5 @@
 var myexpress = require('express')
+var myaxios = require('axios')
 
 const myServer = myexpress();
 const port = 8000;
@@ -36,6 +37,24 @@ myServer.get("/test", (req,res)=>{
     res.send("<h1 style='color:green'>This is a test page</h1>");
 });
 
+
+//From this point we're starting REST API invocations..
+//Using AXIOS
+
+myServer.get("/getreqresusers", (req,res)=>{
+
+    myaxios.get("https://reqres.in/api/users")
+    .then(resp => {
+        console.log("response=",resp.data);
+        res.send(resp.data);
+    })
+    .catch(err => {
+        console.log("error in api call..",err);
+        res.send(err);
+    })
+
+});
+
 myServer.get("*", function(req,res){
     console.log("Received Invalid Page request");
     //console.log("__dirname value=", __dirname);
@@ -46,5 +65,4 @@ myServer.get("*", function(req,res){
 });
 
 
-//From this point we're starting REST API invocations..
-//Using AXIOS
+
