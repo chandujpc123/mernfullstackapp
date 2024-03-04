@@ -132,6 +132,7 @@
     <script>
         var usersTable = null;
         var jsonResponse = null;
+        const APP_BASE_URL = "http://localhost:8000";
 
         function getExistingUsersData() {
             var loader = document.getElementById("loader");
@@ -145,9 +146,8 @@
                     renderTheDataTable();
                 }
             });
-
-            xhr.open("GET", "https://healthtracker-06c0.restdb.io/rest/cctusers");
-            xhr.setRequestHeader("x-apikey", "657c537763ede90d96f17207");
+         
+            xhr.open("GET", APP_BASE_URL+"/cctusers");
             xhr.send();
         }
 
@@ -225,18 +225,12 @@
         }
 
         function addUserPage() {
-            var loader = document.getElementById("loader");
-            loader.style.display = "block";
-
-            
-            setTimeout(function () {
-                window.location.href = "AddNewUser.html";
-            }, 1000); // Adjust the delay as needed
+          window.location.href = "http://localhost:8000/addnewuser"
         }
     </script>
 </head>
 
-<body>
+<body >
     <div class='container'>
         <h1 style="text-align:center;">CCT Health Tracker Application</h1>
         <button class="btn btn-primary" onclick="getExistingUsersData();">Get all register User Data</button>

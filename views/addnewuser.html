@@ -1,0 +1,167 @@
+<html>
+	<head>
+		<!--Datatables External links-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js"></script>
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+		  
+		<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+		<!--Datatables External links-->
+		<!--Bootstrap external links-->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!--Bootstrap external links-->
+		
+		<style>
+			.loader {
+				border: 16px solid #f3f3f3;
+				border-radius: 50%;
+				border-top: 16px solid #3498db;
+				border-bottom: 16px solid #3498db;
+				margin:auto;
+				margin-top:5%;
+				width: 100px;
+				height: 100px;
+				-webkit-animation: spin 2s linear infinite; /* Safari */
+				animation: spin 2s linear infinite;
+			}
+
+			/* Safari */
+			@-webkit-keyframes spin {
+				0% { -webkit-transform: rotate(0deg); }
+				100% { -webkit-transform: rotate(360deg); }
+			}
+
+			@keyframes spin {
+				0% { transform: rotate(0deg); }
+				100% { transform: rotate(360deg); }
+			}
+	</style>
+	<script>
+function goToHomePage(){
+	window.location.href = "AdminDashboard_ShivaDB.html";
+}
+	
+	function createNewUser(){
+	//first check the url parameters
+	//if there is userid in the parameters, it is for edit operation
+	//else it is to create new User
+		let selOperation = null;
+		let selOperationUrl = null;
+		let username = document.getElementById("uname").value;
+		let password = document.getElementById("pwd").value;
+		let confpassword = document.getElementById("confpwd").value;
+		let mobile = document.getElementById("mob").value;
+		let email = document.getElementById("email").value;
+		let fname = document.getElementById("fname").value;
+		
+		let newUserJSON = {};
+		//newUserJSON.username = username;
+		newUserJSON["username"] = username;
+		newUserJSON["password"] = confpassword;
+		newUserJSON["mobile"] = mobile;
+		newUserJSON["email"] = email;
+		newUserJSON["father_name"] = fname;
+		
+		
+
+	
+		let  urlParams = new URLSearchParams(window.location.search);		
+		let reqUserId = urlParams.get("uId");
+		console.log("UserId received from previous page=",reqUserId);
+		//if(!(reqUserId == null || reqUserId == undefined || reqUserId.length == 0))
+		if(reqUserId != null && reqUserId != undefined && reqUserId.length>0)
+		{
+		//PUT operation - for edit
+			selOperation = "PUT";
+			selOperationUrl = "https://shivadb-f348.restdb.io/rest/cctusers/"+reqUserId;
+			//safe side put assignment to edit current user
+			//newUserJSON["_id"] = reqUserId;
+		}
+		else {
+			//POST operation - for create
+			selOperation = "POST";
+			selOperationUrl = "https://shivadb-f348.restdb.io/rest/cctusers";
+		}
+		
+		const data = JSON.stringify(newUserJSON);
+				//send to api post
+		const xhr = new XMLHttpRequest();
+		//xhr.withCredentials = true;
+
+		xhr.addEventListener("readystatechange", function () {
+		  if (this.readyState === this.DONE) {
+			alert("User Created Successfully");
+			goToHomePage();
+		  }
+		});
+
+		xhr.open(selOperation, selOperationUrl);
+		xhr.setRequestHeader("x-apikey", "657c53fe63ede92cdbf17208");
+
+		xhr.setRequestHeader("Content-Type","application/json");
+		xhr.send(data);
+		
+	}
+	
+	function getURLParameters(){
+		let  urlParams = new URLSearchParams(window.location.search);		
+		let reqUserId = urlParams.get("uId");
+		console.log("UserId received from previous page=",reqUserId);
+		//if(!(reqUserId == null || reqUserId == undefined || reqUserId.length == 0))
+		if(reqUserId != null && reqUserId != undefined && reqUserId.length>0)
+		{
+			//get this user information from backend
+		let xhr = new XMLHttpRequest();
+		//xhr.withCredentials = true;
+
+		xhr.addEventListener("readystatechange", function () {
+		  if (this.readyState === this.DONE) {
+			//display
+			//document.getElementById("existing_items").innerHTML = this.responseText;
+			console.log("Retrieved user information for userId ",reqUserId, "=",this.responseText);
+			let userObj = JSON.parse(this.responseText);
+			//show the data in the fields
+			document.getElementById("uname").value = userObj.username;
+			document.getElementById("pwd").value = userObj.password;
+			document.getElementById("confpwd").value = userObj.password;
+			document.getElementById("mob").value = userObj.mobile;
+			document.getElementById("email").value = userObj.email;
+			document.getElementById("fname").value = userObj.father_name;
+			
+			
+		  } 	
+		}); //addEventListener
+
+		xhr.open("GET", "https://shivadb-f348.restdb.io/rest/cctusers/"+reqUserId);
+		xhr.setRequestHeader("x-apikey", "657c53fe63ede92cdbf17208");
+		//xhr.setRequestHeader("X-RapidAPI-Host", "demo-project64700.p.rapidapi.com");
+
+		xhr.send();
+		
+		} //userid not null condition
+		
+	}//function getURLParameters
+	
+	
+	
+	</script>
+	<body onload="getURLParameters()">
+	<div style="margin-left:10%; margin-right:10%">
+	<h1 style="align:center">Cloud Chain Technologies - Health Tracker</h1>
+	<h2>Add New User</h2>
+	</div>
+	<br /><br />
+	Username: <input type="text" id="uname" /><br />
+	Password: <input type="password" id="pwd" /><br />
+	Confirm Password: <input type="password" id="confpwd" /><br />
+	Mobile: <input type="text" id="mob" /><br />
+	Email: <input type="email" id="email" /><br />
+	FatherName: <input type="text" id="fname" />
+	
+	<br /><br />
+	<button onclick="createNewUser()"> Save </button> <button onclick="goToHomePage()">Cancel</button>
+	
+	</body>
+</html>
+
