@@ -2,12 +2,17 @@ var myexpress = require('express')
 var myaxios = require('axios')
 
 const myServer = myexpress();
+
 const port = 8000;
 /*
 myServer.listen(port, function(){
     console.log("My Express Server is started on 8000");
 });
 */
+//use the json methods in express to consider hearing to the json body or data in req
+
+myServer.use(myexpress.json());
+
 
 myServer.listen(port, ()=>{
     console.log("My Express Server is started on 8000");
@@ -43,13 +48,15 @@ myServer.get("/test", (req,res)=>{
 
 myServer.get("/getreqresusers", (req,res)=>{
 
-    myaxios.get("https://reqres.in/api/users")
+    myaxios.get("https://reqres.in/ddddapi/uiuiuiuiu")
     .then(resp => {
         console.log("response=",resp.data);
+        res.status(200);
         res.send(resp.data);
     })
     .catch(err => {
         console.log("error in api call..",err);
+        res.status(500);
         res.send(err);
     })
 
@@ -90,11 +97,12 @@ myServer.get("/cctusers", function(req,res){
          
         }
         
-
+        res.status(200);
         res.send(newJSONArr);
     })
     .catch(err => {
         console.log("error in api call..",err);
+        res.status(500);
         res.send(err);
     })
 });
@@ -136,11 +144,12 @@ myServer.get("/addnewuser", function(req,res){
     console.log("Received New Admin Page request");
     //console.log("__dirname value=", __dirname);
     //res.sendFile(__dirname'./views/contact.html');
+    res.status(200);
     res.sendFile(__dirname+"/views/addnewuser.html");
 });
 
 
-myServer.post("/newuser", function(req,res){
+myServer.get("/testnewuser", function(req,res){
 
     const userObj = {
         "username":"cctuser1",
@@ -162,11 +171,46 @@ myServer.post("/newuser", function(req,res){
       
       myaxios(config)
       .then(function (response) {
-        //console.log(JSON.stringify(response.data));
+       // console.log("RESPONSE IN TEST USER CREATION API\n",response);
+        res.status(201);
         res.send(JSON.stringify(response.data))
       })
       .catch(function (error) {
         console.log(error);
+        res.status(500);
+        res.send(err.toString());
+      });
+      
+
+})
+
+
+myServer.post("/newuser", function(req,res){
+    
+    console.log("Request received in newuser endpoint=",req);
+
+   const userObj = req.body;
+   console.log("UserObject received = ",userObj);
+
+    var config = {
+        method: 'post',
+        url: 'https://healthtracker-06c0.restdb.io/rest/cctusers',
+        headers: { 
+          'x-apikey': '657c537763ede90d96f17207', 
+          'Content-Type': 'application/json'
+        },
+        data : userObj
+      };
+      
+      myaxios(config)
+      .then(function (response) {
+        //console.log(JSON.stringify(response.data));
+        res.status(201);
+        res.send(JSON.stringify(response.data))
+      })
+      .catch(function (error) {
+        console.log(error);
+        res.status(500);
         res.send(err.toString());
       });
       
@@ -180,9 +224,10 @@ myServer.get("*", function(req,res){
     console.log("Received Invalid Page request");
     //console.log("__dirname value=", __dirname);
     //res.sendFile(__dirname'./views/contact.html');
-    //res.send("<h1 style='color:red'>Page NOT AVAILABLE </h1>");
+    res.status(404);    
+    res.send("<h1 style='color:red'>Page NOT AVAILABLE </h1>");
     //or redirect like below
-    res.redirect("/");
+    //res.redirect("/");
 });
 
 

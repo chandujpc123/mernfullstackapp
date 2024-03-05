@@ -1,167 +1,471 @@
-<html>
-	<head>
-		<!--Datatables External links-->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js"></script>
-		<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
-		  
-		<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
-		<!--Datatables External links-->
-		<!--Bootstrap external links-->
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<!--Bootstrap external links-->
+
+<!DOCTYPE html>
+<html lang="en">
+<center>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <!-- DATATABLES -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+ <script src="FetchUsersData.js"></script>
+
+    <style>
+        body {
+            background-image: url('1.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Custom styling for the DataTable */
+        #users_wrapper {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none; /* Initially hide the overlay */
+            padding-top: 20%;
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: auto; /* Center the spinner */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Bootstrap and other CSS links */
+        /* Your existing styles */
+
+        /* Additional styles for the edit form */
+        .edit-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .edit-form input[type="text"],
+        .edit-form input[type="password"],
+        .edit-form input[type="email"] {
+            width: calc(100% - 10px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .edit-form button {
+            margin-right: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .save-changes-btn {
+            background-color: #3498db;
+            color: #fff;
+            padding: 15px 32px;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background-color: #3498db;
+            color: #fff;
+            padding: 15px 32px;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background-color: #3498db;
+            color: #fff;
+            font-size: 16px;
+			
 		
-		<style>
-			.loader {
-				border: 16px solid #f3f3f3;
-				border-radius: 50%;
-				border-top: 16px solid #3498db;
-				border-bottom: 16px solid #3498db;
-				margin:auto;
-				margin-top:5%;
-				width: 100px;
-				height: 100px;
-				-webkit-animation: spin 2s linear infinite; /* Safari */
-				animation: spin 2s linear infinite;
-			}
+        }
 
-			/* Safari */
-			@-webkit-keyframes spin {
-				0% { -webkit-transform: rotate(0deg); }
-				100% { -webkit-transform: rotate(360deg); }
-			}
+  
+        #loader {
+            display: none;
+        }
+    </style>
 
-			@keyframes spin {
-				0% { transform: rotate(0deg); }
-				100% { transform: rotate(360deg); }
-			}
-	</style>
-	<script>
-function goToHomePage(){
-	window.location.href = "AdminDashboard_ShivaDB.html";
+    <script>
+	var userData =null;
+
+        // Your existing functions and scripts
+  function goToHomePage() {
+            window.location.href = "AdminDashboard.html";
+        }
+
+        // Function to validate username
+        function validateUsername(uname) {
+            if (uname.trim() === '' || uname === undefined || uname === null || uname === "") {
+                alert("Please enter a username.");
+				document.getElementById("uname").focus();
+                return false;
+            } else {
+                let specialChars = "1,2,3,4,5,6,7,8,9,0,-,=,!,@,#,$,%,^,&,*,(,),_,+,{,},|,[,],;,:,',<,>,.,?,~,`,\",\/";
+                special_Chars = specialChars.split(",");
+                special_Chars.push(",");
+                for (let j = 0; j < special_Chars.length; j++) {
+                    let b = special_Chars[j];
+                    let c = uname.trim().indexOf(b);
+                    if (c >= 0) {
+                        alert("Special characters like '" + b + "' are not allowed in the username field.");
+                        return false;
+                    } else if (uname.length <= 3) {
+                        alert("Username should be greater than 3 characters.");
+						document.getElementById("uname").focus();
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // Function to validate email
+        function validateEmail(email) {
+            if (!email || email.trim() === '' || email.indexOf('@') < 3 || email.lastIndexOf('.') < email.indexOf('@') + 2 || email.lastIndexOf('.') >= email.length - 2) {
+                alert("Please enter a valid email address.");
+				document.getElementById("email").focus();
+                return false;
+            }
+            return true;
+        }
+
+        // Function to validate mobile number
+        function validateMobile(mobile) {
+            if (!mobile || mobile.trim() === '' || mobile.length !== 10 || !['6', '7', '8', '9'].includes(mobile.charAt(0)) || isNaN(mobile)) {
+                alert("Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.");
+				document.getElementById("phone").focus();
+                return false;
+            }
+            return true;
+        }
+		   function validatePassword(pwd) {
+            if (pwd.trim() === '' || pwd === undefined || pwd === null || pwd === "") {
+                alert("Please enter the password.");
+				document.getElementById("password").focus();
+                return false;
+            } else {
+                let uCletter = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z";
+                let lCletter = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
+                let num = "1,2,3,4,5,6,7,8,9,0";
+                let spl = "-,=,!,@,#,$,%,^,&,*,(,),_,+,{,},|,[,],;,:,',<,>,.,?,~,`,\",\/";
+                upper_case = uCletter.split(",");
+                lower_case = lCletter.split(",");
+                number = num.split(",");
+                spl_char = spl.split(",");
+                spl_char.push(",");
+                let uc = false;
+                for (let i = 0; i < upper_case.length; i++) {
+                    let b = upper_case[i];
+                    let c = pwd.indexOf(b);
+                    if (c >= 0) {
+                        uc = true;
+                        break;
+                    }
+                }
+
+                let lc = false;
+                for (let i = 0; i < lower_case.length; i++) {
+                    let b = lower_case[i];
+                    let c = pwd.indexOf(b);
+                    if (c >= 0) {
+                        lc = true;
+                        break;
+                    }
+                }
+                let No = false;
+                for (let i = 0; i < number.length; i++) {
+                    let b = number[i];
+                    let c = pwd.indexOf(b);
+                    if (c >= 0) {
+                        No = true;
+                        break;
+                    }
+                }
+                let special = false;
+                for (let i = 0; i < spl_char.length; i++) {
+                    let b = spl_char[i];
+                    let c = pwd.indexOf(b);
+                    if (c >= 0) {
+                        special = true;
+                        break;
+                    }
+                }
+
+                if (uc == false || lc == false || No == false || special == false || pwd.length < 8) {
+                    alert("The Password should have at least, One Capital letter, One Small letter, One Number, One Special Character and Minimum 8 characters.");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+      // function validateConfirmPassword(password, confirmPassword) {
+	  function validateConfirmPassword(pwd, confirmPassword) {
+	  if (confirmPassword.trim() === '' || confirmPassword === undefined || confirmPassword === null || confirmPassword === "") {
+                alert("Please enter the confirmPassword.");
+				return false;
+				}
+				
+            if (pwd !== confirmPassword) {
+                alert("Password and ConfirmPassword do not match.");
+                document.getElementById("confirmPassword").focus();
+                return false;
+				}
+            
+            return true;
+        
 }
-	
-	function createNewUser(){
-	//first check the url parameters
-	//if there is userid in the parameters, it is for edit operation
-	//else it is to create new User
-		let selOperation = null;
-		let selOperationUrl = null;
-		let username = document.getElementById("uname").value;
-		let password = document.getElementById("pwd").value;
-		let confpassword = document.getElementById("confpwd").value;
-		let mobile = document.getElementById("mob").value;
-		let email = document.getElementById("email").value;
-		let fname = document.getElementById("fname").value;
-		
-		let newUserJSON = {};
-		//newUserJSON.username = username;
-		newUserJSON["username"] = username;
-		newUserJSON["password"] = confpassword;
-		newUserJSON["mobile"] = mobile;
-		newUserJSON["email"] = email;
-		newUserJSON["father_name"] = fname;
-		
-		
 
-	
-		let  urlParams = new URLSearchParams(window.location.search);		
-		let reqUserId = urlParams.get("uId");
-		console.log("UserId received from previous page=",reqUserId);
-		//if(!(reqUserId == null || reqUserId == undefined || reqUserId.length == 0))
-		if(reqUserId != null && reqUserId != undefined && reqUserId.length>0)
-		{
-		//PUT operation - for edit
-			selOperation = "PUT";
-			selOperationUrl = "https://shivadb-f348.restdb.io/rest/cctusers/"+reqUserId;
-			//safe side put assignment to edit current user
-			//newUserJSON["_id"] = reqUserId;
-		}
-		else {
-			//POST operation - for create
-			selOperation = "POST";
-			selOperationUrl = "https://shivadb-f348.restdb.io/rest/cctusers";
-		}
-		
-		const data = JSON.stringify(newUserJSON);
-				//send to api post
-		const xhr = new XMLHttpRequest();
-		//xhr.withCredentials = true;
 
-		xhr.addEventListener("readystatechange", function () {
-		  if (this.readyState === this.DONE) {
-			alert("User Created Successfully");
-			goToHomePage();
-		  }
-		});
+function checkDuplicateUser(email, mobile) {
+            let xhr = new XMLHttpRequest();
+            let duplicateExist = false;
 
-		xhr.open(selOperation, selOperationUrl);
-		xhr.setRequestHeader("x-apikey", "657c53fe63ede92cdbf17208");
+            xhr.addEventListener("readystatechange", function () {
+                if (this.readyState === this.DONE) {
+                    let users = JSON.parse(this.responseText);
+                    for (let i = 0; i < users.length; i++) {
+                        if (usersd[i].email === email || users[i].mobile === mobile) {
+                            duplicateExist = true;
+                            break;
+                        }
+                    }
+                }
+            });
 
-		xhr.setRequestHeader("Content-Type","application/json");
-		xhr.send(data);
-		
-	}
-	
-	function getURLParameters(){
-		let  urlParams = new URLSearchParams(window.location.search);		
-		let reqUserId = urlParams.get("uId");
-		console.log("UserId received from previous page=",reqUserId);
-		//if(!(reqUserId == null || reqUserId == undefined || reqUserId.length == 0))
-		if(reqUserId != null && reqUserId != undefined && reqUserId.length>0)
-		{
-			//get this user information from backend
-		let xhr = new XMLHttpRequest();
-		//xhr.withCredentials = true;
+            xhr.open("GET", "https://healthtracker-06c0.restdb.io/rest/cctusers");
+            xhr.setRequestHeader("x-apikey","657c537763ede90d96f17207");
+            xhr.send();
 
-		xhr.addEventListener("readystatechange", function () {
-		  if (this.readyState === this.DONE) {
-			//display
-			//document.getElementById("existing_items").innerHTML = this.responseText;
-			console.log("Retrieved user information for userId ",reqUserId, "=",this.responseText);
-			let userObj = JSON.parse(this.responseText);
-			//show the data in the fields
-			document.getElementById("uname").value = userObj.username;
-			document.getElementById("pwd").value = userObj.password;
-			document.getElementById("confpwd").value = userObj.password;
-			document.getElementById("mob").value = userObj.mobile;
-			document.getElementById("email").value = userObj.email;
-			document.getElementById("fname").value = userObj.father_name;
-			
-			
-		  } 	
-		}); //addEventListener
+            return duplicateExist;
+        }
+		function usersDataFetching(){
+	      
+	       userData=fetchUsersData();
+		  console.log("users data", userData)
+		  
+	 }
 
-		xhr.open("GET", "https://shivadb-f348.restdb.io/rest/cctusers/"+reqUserId);
-		xhr.setRequestHeader("x-apikey", "657c53fe63ede92cdbf17208");
-		//xhr.setRequestHeader("X-RapidAPI-Host", "demo-project64700.p.rapidapi.com");
+        // Function to fetch user information for editing
+        function getURLParameters() {
+            let urlParams = new URLSearchParams(window.location.search);
+            let reqUserId = urlParams.get("uId");
 
-		xhr.send();
-		
-		} //userid not null condition
-		
-	}//function getURLParameters
-	
-	
-	
-	</script>
-	<body onload="getURLParameters()">
-	<div style="margin-left:10%; margin-right:10%">
-	<h1 style="align:center">Cloud Chain Technologies - Health Tracker</h1>
-	<h2>Add New User</h2>
-	</div>
-	<br /><br />
-	Username: <input type="text" id="uname" /><br />
-	Password: <input type="password" id="pwd" /><br />
-	Confirm Password: <input type="password" id="confpwd" /><br />
-	Mobile: <input type="text" id="mob" /><br />
-	Email: <input type="email" id="email" /><br />
-	FatherName: <input type="text" id="fname" />
-	
-	<br /><br />
-	<button onclick="createNewUser()"> Save </button> <button onclick="goToHomePage()">Cancel</button>
-	
-	</body>
+            if (reqUserId != null && reqUserId != undefined && reqUserId.length > 0) {
+                document.getElementById("edith2").style.display = "block";
+                document.getElementById("addh2").style.display = "none";
+                document.getElementById("saveButton").style.display = "block";
+                document.getElementById("addButton").style.display = "none";
+
+                let xhr = new XMLHttpRequest();
+
+                xhr.addEventListener("readystatechange", function () {
+                    if (this.readyState === this.DONE) {
+                        let userObj = JSON.parse(this.responseText);
+
+                        document.getElementById("userId").value = reqUserId;
+                        document.getElementById("uname").value = userObj.username ;
+                        document.getElementById("email").value = userObj.email  ;
+                        document.getElementById("phone").value = userObj.mobile  ;
+                      
+                        document.getElementById("password").value = userObj.password ;
+                        document.getElementById("confirmPassword").value = userObj.confirmPassword ;
+                    }
+                });
+
+                xhr.open("GET", "https://healthtracker-06c0.restdb.io/rest/cctusers/" + reqUserId);
+                xhr.setRequestHeader("x-apikey", "657c537763ede90d96f17207");
+                xhr.send();
+            } else {
+                document.getElementById("addh2").style.display = "block";
+                document.getElementById("edith2").style.display = "none";
+                document.getElementById("saveButton").style.display = "none";
+                document.getElementById("addButton").style.display = "block";
+            }
+        }
+
+        // Function to save changes (for both edit and add)
+        function saveChanges() {
+            
+            document.getElementById("loader").style.display = "block";
+
+            let userId = document.getElementById("userId").value;
+            let username = document.getElementById("uname").value;
+            let email = document.getElementById("email").value;
+            let mobile = document.getElementById("phone").value;
+         
+            let password = document.getElementById("password").value;
+            let confirmPassword = document.getElementById("confirmPassword").value;
+
+            // Validation for username
+            if (!validateUsername(username)) {
+                document.getElementById("loader").style.display = "none";
+                return;
+            }
+
+            // Validation for email
+            if (!validateEmail(email)) {
+                document.getElementById("loader").style.display = "none";
+                return;
+            }
+
+            // Validation for mobile number
+            if (!validateMobile(mobile)) {
+                document.getElementById("loader").style.display = "none";
+                return;
+            }
+   if (!validatePassword(password)) {
+                document.getElementById("loader").style.display = "none";
+                return;
+            }
+            // Additional validations for other fields can be added here...
+  if (!validateConfirmPassword(password, confirmPassword)) {
+                document.getElementById("loader").style.display = "none";
+                return;
+            }
+
+/*
+ for (let i = 0; i < userData.length; i++) {
+                        if (userData[i].email === email || userData[i].mobile === mobile) {
+                            duplicateExist = true;
+							document.getElementById("loader").style.display = "none";
+							alert("Alredy there is an existing user with same email id or mobile number");
+                            return;
+                        }
+                    }*/
+
+
+            let updatedUserInfo = {
+                "username": username,
+                "email": email,
+                "mobile": mobile,
+              
+                "password": password,
+                "confirmPassword": confirmPassword
+            };
+
+            console.log("Updated User Info:", updatedUserInfo); // Log the data to the console
+
+            let selOperation = null;
+            let selOperationUrl = null;
+
+            // Check if userId is present (editing existing user) or not (adding new user)
+            if (userId) {
+                // Editing existing user
+                selOperation = "PUT";
+                selOperationUrl = "https://healthtracker-06c0.restdb.io/rest/cctusers/" + userId;
+            } else {
+                // Adding new user
+                selOperation = "POST";
+
+                selOperationUrl = "http://localhost:8000/newuser";
+            }
+
+            const data = JSON.stringify(updatedUserInfo);
+
+            let xhr = new XMLHttpRequest();
+            xhr.addEventListener("readystatechange", function () {
+                if (this.readyState === this.DONE) {
+                    console.log("Response from the server:", this.responseText); // Log the server response
+                    if (userId) {
+                        alert("User information updated successfully!");
+                    } else {
+                        alert("New user added successfully!");
+                    }
+
+                    // Hide the loader after the operation is completed
+                    document.getElementById("loader").style.display = "none";
+
+                    goToHomePage();
+                }
+            });
+
+            xhr.open(selOperation, selOperationUrl);
+            xhr.setRequestHeader("x-apikey", "657c537763ede90d96f17207");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(data);
+        }
+
+        usersDataFetching();
+
+    </script>
+</head>
+
+<body onload="getURLParameters()">
+    <div style="margin-left: 10%; margin-right: 10%">
+        <h1 style="text-align: center;">Cloud Chain Technologies - Health Tracker</h1>
+        <h2 id="edith2" style="display:none">Edit User Information</h2>
+        <h2 id="addh2" style="display:none">Add new user information</h2>
+    </div>
+    <br /><br />
+
+    <!-- Edit Form -->
+    <div class="edit-form">
+        <input type="hidden" id="userId" />
+        Name: <input type="text" id="uname" /><br />
+        Email: <input type="email" id="email" /><br />
+        Phone Number: <input type="text" id="phone" /><br />
+       
+        password: <input type="password" id="password" /><br />
+        confirmPassword: <input type="password" id="confirmPassword" /><br />
+
+        <br />
+            <p><button id="saveButton" class="edit-form button save-changes-btn" onclick="saveChanges()"> Save Changes </button></p>
+            <p><button id="addButton" class="edit-form button save-btn" onclick="saveChanges()"> Save </button></p>
+            <p><button class="edit-form button cancel-btn" onclick="goToHomePage()">Cancel</button></p>
+    </div>
+
+    <!-- Loader HTML code -->
+    <div id="loader" class="overlay">
+        <div class="loader"></div>
+    </div>
+</body>
+</center>
 </html>
-
