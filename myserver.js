@@ -1,5 +1,7 @@
 var myexpress = require('express')
 var myaxios = require('axios')
+var mycors = require('cors')
+var myutil = require('./models/utilities.js')
 
 const myServer = myexpress();
 
@@ -11,8 +13,10 @@ myServer.listen(port, function(){
 */
 //use the json methods in express to consider hearing to the json body or data in req
 
-myServer.use(myexpress.json());
 
+myServer.use(mycors())
+myServer.use(myexpress.json());
+myServer.use(myexpress.static('public'))
 
 myServer.listen(port, ()=>{
     console.log("My Express Server is started on 8000");
@@ -20,7 +24,8 @@ myServer.listen(port, ()=>{
 
 myServer.get("/", function(req,res){
     console.log("Received Home Page request");
-    res.send("<body bgcolor='lightblue'><h1>Welcome to Node JS Web World!!!!!!!!!!</h1> <h1>This is our first Web Server</h1></body>");
+    //res.send("<body bgcolor='lightblue'><h1>Welcome to Node JS Web World!!!!!!!!!!</h1> <h1>This is our first Web Server</h1></body>");
+    res.sendFile(__dirname+"/views/welcome.html");
 });
 
 myServer.get("/contact", function(req,res){
@@ -217,11 +222,27 @@ myServer.post("/newuser", function(req,res){
 
 })
 
+myServer.get("/factorial5", (req,res)=>{
+    res.status(200);    
+    let fact = myutil.getFactorial(5)
+    res.send("<h1 style='color:green'>Factorial of 5 is:"+fact+" </h1>");
+})
+
+myServer.get("/factorial/:number", (req,res)=>{
+    //console.log("request received = ", req);
+    let givenNum = req.params.number;    
+    let fact = myutil.getFactorial(givenNum);
+    res.status(200);    
+    res.send("<h1 style='color:green'>Factorial of "+givenNum+" is:"+fact+" </h1>");
+})
+
+
+myServer.get("/product/:number1/:number2", myutil.product);
 
 
 //Any other path other than the above routes, redirect to homepage
 myServer.get("*", function(req,res){
-    console.log("Received Invalid Page request");
+    //console.log("Received Invalid Page request");
     //console.log("__dirname value=", __dirname);
     //res.sendFile(__dirname'./views/contact.html');
     res.status(404);    
