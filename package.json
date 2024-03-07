@@ -6,14 +6,16 @@
   "scripts": {
     "start": "node myserver.js",
     "startmon": "nodemon myserver.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "startserverlocaldb" : "nodemon mylocaldbserver.js"
   },
   "author": "chanduj",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.6.7",
     "cors": "^2.8.5",
-    "express": "^4.18.3"
+    "express": "^4.18.3",
+    "mongodb": "^6.4.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
