@@ -10,11 +10,14 @@ async function readAFile(fileName){
     return data;
 }
 
+async function readMyFile() {
+    let myFileData = readAFile('./views/welcome.html')
+    console.log("File Data read by program=\n",myFileData);
+
+}
 console.log("welcome");
 
-let myFileData = readAFile('./views/welcome.html')
-console.log("File Data read by program=\n",myFileData);
-
+readMyFile();
 
 
 console.log("end");

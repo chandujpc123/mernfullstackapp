@@ -78,9 +78,16 @@ async function get_all_docs_from_collection() {
 async function insertADoc(doc) {   
   const collection = await getDBCollection();
   console.log('connected successfully to the collection')
-  let insertedDoc = collection.insertOne(doc);
-  console.log('Inserted Doc successfully to the collection')
-  return insertedDoc;
+  try{
+    let insertedDoc = await collection.insertOne(doc);
+    console.log('Inserted Doc successfully to the collection')
+    return insertedDoc;
+  }
+  catch(err){
+    console.log("Error=",err.message);
+    return "Insertion not performed!"
+  }
+  
 }
 
 
@@ -89,15 +96,42 @@ async function insertADoc(doc) {
     const collection = await getDBCollection();
     let allDocs = await collection.find({}).toArray();
     console.log("Fetched All Docs from collection=",allDocs)
+    return allDocs;
   }
 
+/*
   let newDoc = {
-    "_id":"chandu4@cct.com",
-    "first_name":"chandu4",
-    "last_name":"j4",
+    "_id":"chandu5@cct.com",
+    "first_name":"chandu5",
+    "last_name":"j5",
     "addr":"hydknr"
   }
-  insertADoc(newDoc);
-  getAllDocsFromCollection();
+
+  try{
+    let returnObj = insertADoc(newDoc);
+    console.log("returned from insertion=",returnObj)
+    //client.close();
+  }catch(err){
+    console.log(err.message);
+  }finally{
+    //client.close();
+    console.log("Executed finally from insert operation")
+  }
+  
+  try{
+    getAllDocsFromCollection();
+    //client.close();
+  }catch(er){
+    console.log("err == ",er)    
+  }
+  finally{
+   // client.close();
+   console.log("executed finally from getalldocs operation");
+  }
+  
+
+  */
+
   console.log("Done!");
 
+module.exports = {getAllDocsFromCollection}

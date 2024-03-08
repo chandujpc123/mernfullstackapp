@@ -23,7 +23,10 @@ let product = (req,res)=>{
 
 }
 
-module.exports = {getFactorial, product}
+
+
+
+module.exports = {getFactorial, product, divOperation}
 
 //TODO:
 
@@ -37,3 +40,4 @@ module.exports = {getFactorial, product}
    // {number:5, factorial : !5}, {number:12, factorial:!12} 
 //}
  //}
+
