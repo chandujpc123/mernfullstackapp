@@ -3,6 +3,7 @@ var myaxios = require('axios')
 var mycors = require('cors')
 //var myutil = require('./models/utilities.js')
 var myDbUtil = require('./models/LocalMongoDB')
+var mySqlUtil = require('./models/LocalMySQL2')
 
 const myServer = myexpress();
 
@@ -33,7 +34,7 @@ myServer.get("/", function(req,res){
 myServer.get("/cctusers", async (req,res)=>{   
   try{
     let resArr = await myDbUtil.getAllDocsFromCollection();
-   console.log("console.log received array in api = ",resArr);
+   console.log("console.log MONGODB response in api = ",resArr);
    res.status(200);
    res.send(JSON.stringify(resArr));
   }catch(err){
@@ -42,6 +43,19 @@ myServer.get("/cctusers", async (req,res)=>{
   }
    
 });
+
+myServer.get("/getstudents", async (req,res)=>{   
+    try{
+      let resArr = await mySqlUtil.getAllStudentsRecords();
+     console.log("console.log MySQL response in api = ",resArr);
+     res.status(200);
+     res.send(JSON.stringify(resArr));
+    }catch(err){
+      res.status(500);
+      res.send(err.message)
+    }
+     
+  });
 
 
 
