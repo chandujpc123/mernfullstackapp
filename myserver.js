@@ -78,7 +78,7 @@ myServer.get("/newadmin", function(req,res){
 
 myServer.get("/cctusers", function(req,res){   
     const headersObj = {
-        "x-apikey" : "657c537763ede90d96f17207"
+        "x-apikey" : process.env.RESTDB_TOKEN
     }
     myaxios.get("https://healthtracker-06c0.restdb.io/rest/cctusers", {
         headers: headersObj

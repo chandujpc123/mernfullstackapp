@@ -5,10 +5,10 @@ var mysql = require('mysql2/promise')
 async function testMySqlQuery() {
     // Create the connection to database
     const connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: '',
-        database: 'demo',
+        host: process.env.MYSQLDB_HOST,
+        user: process.env.MYSQLDB_USER,
+        password: process.env.MYSQLDB_PWD,
+        database: process.env.MYSQLDB_DB,
     });
     
     // A simple SELECT query
