@@ -1,5 +1,5 @@
 var fs = require('fs')
-
+let myFileData = null;
 
 async function readAFile(fileName){
     let data = await fs.readFile(fileName, (err, data)=>{
@@ -11,7 +11,7 @@ async function readAFile(fileName){
 }
 
 async function readMyFile() {
-    let myFileData = readAFile('./views/welcome.html')
+    myFileData = readAFile('./views/welcome.html')
     console.log("File Data read by program=\n",myFileData);
 
 }

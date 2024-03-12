@@ -4,10 +4,11 @@ var mycors = require('cors')
 //var myutil = require('./models/utilities.js')
 var myDbUtil = require('./models/LocalMongoDB')
 var mySqlUtil = require('./models/LocalMySQL2')
+require('dotenv').config();
 
 const myServer = myexpress();
-
-const port = 8000;
+console.log("Port read from env variable=", process.env.NODE_PORT);
+const port = process.env.NODE_PORT;
 /*
 myServer.listen(port, function(){
     console.log("My Express Server is started on 8000");
@@ -21,7 +22,7 @@ myServer.use(myexpress.json());
 myServer.use(myexpress.static('public'))
 
 myServer.listen(port, ()=>{
-    console.log("My Express Server is started on 8000");
+    console.log("My Express Server is started on "+port);
 });
 
 myServer.get("/", function(req,res){

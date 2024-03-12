@@ -1,3 +1,42 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Utils
+ *   description: This is generic utility apis 
+ * /factorial:
+ *   get:
+ *     summary: Finds Factorial of 5
+ *     tags: [Utils]
+ *     responses:
+ *       200:
+ *         description: Finds factorial of 5
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: number              
+ *
+ * 
+ * /factorial/{num}:
+ *   get:
+ *     summary: Finds Factorial of a given number
+ *     tags: [Utils]
+ *     parameters:
+ *       - in: path
+ *         name: num
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: any number for which you want to find factorial
+ *     responses:
+ *       200:
+ *         description: Finds factorial of a given number
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: number              
+ *
+ */
+
 let getFactorial = (num) => {
     let fact = 1;
     for(let i=1; i<=num; i++)
@@ -23,8 +62,8 @@ let product = (req,res)=>{
 
 }
 
-
-
+//TODO
+let divOperation = () =>{}
 
 module.exports = {getFactorial, product, divOperation}
 
