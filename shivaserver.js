@@ -59,7 +59,7 @@ myServer.listen(port, ()=>{
 });
 
 myServer.get("/test", (req,res)=>{
-//console.log("Received test Page request");  
+console.log("Received test Page request");  
 res.send("<h1 style='color:green'>This is a test page</h1>");
 });
 //From this point we're starting REST API invocations..

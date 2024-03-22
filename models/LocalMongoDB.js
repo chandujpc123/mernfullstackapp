@@ -6,6 +6,7 @@ const { MongoClient } = require('mongodb');
 const url = 'mongodb://localhost:27017';
 const dbName = 'demo_db';
 const collName = 'demousers';
+const trainingCollName = "trainings";
 const client = new MongoClient(url);
 
 // Database Name
@@ -19,6 +20,19 @@ async function getDBCollection() {
     //console.log('connected successfully to the collection')
 
     return collection;
+
+} 
+
+
+async function getDBTrainingCollection() {
+  await client.connect();  
+  //console.log('Connected successfully to Mongo Server..');
+  const db = client.db(dbName);
+  //console.log('Connected successfully to the database')
+  const collection = db.collection(trainingCollName);
+  //console.log('connected successfully to the collection')
+
+  return collection;
 
 } 
 
@@ -99,6 +113,13 @@ async function insertADoc(doc) {
     return allDocs;
   }
 
+  async function getAllDocsFromTrainingCollection(){
+    const collection = await getDBTrainingCollection();
+    let allDocs = await collection.find({}).toArray();
+    console.log("Fetched All Training Docs from collection=",allDocs)
+    return allDocs;
+  }
+
 /*
   let newDoc = {
     "_id":"chandu5@cct.com",
@@ -132,6 +153,22 @@ async function insertADoc(doc) {
 
   */
 
+  //simplified data insertion
+async function insertATrainingDoc(doc) {   
+  const collection = await getDBTrainingCollection();
+  console.log('connected successfully to the collection')
+  try{
+    let insertedDoc = await collection.insertOne(doc);
+    console.log('Inserted Doc successfully to the collection')
+    return insertedDoc;
+  }
+  catch(err){
+    console.log("Error=",err.message);
+    return "Insertion not performed!"
+  }
+  
+}
+
   console.log("Done!");
 
-module.exports = {getAllDocsFromCollection}
+module.exports = {getAllDocsFromCollection ,getAllDocsFromTrainingCollection, insertATrainingDoc}
